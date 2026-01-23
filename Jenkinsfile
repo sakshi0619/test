@@ -1,17 +1,26 @@
 pipeline {
     agent any
+
     stages {
-        stage('Run Java') {
+        stage('Checkout') {
             steps {
-                bat 'javac Hello.java'
-                bat 'java Hello'
+                checkout([$class: 'GitSCM',
+                  branches: [[name: '*/main']],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [[$class: 'WipeWorkspace']],
+                  userRemoteConfigs: [[url: 'https://github.com/sakshi0619/test.git']]
+                ])
             }
         }
-        stage('Run Python') {
+
+        stage('Compile Java') {
             steps {
-                bat 'python hello.py'
+                bat 'dir'              // Lists files in workspace (optional)
+                bat 'javac hello.java' // Compile your Java file
+                bat 'java hello'       // Run the program (optional)
             }
         }
     }
 }
+
 
